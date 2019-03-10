@@ -1,0 +1,18 @@
+ContoBancario\Domain\ContoCorrente\Aggregate\ContoCorrente:
+  type: entity
+  table: conti
+
+  id:
+    idConto:
+      type: IdConto
+      column: id
+
+  fields:
+    titolare:
+      type: string
+      nullable: false
+    saldo:
+      type: integer
+      nullable: false
+      options:
+        default: 0

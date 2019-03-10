@@ -1,0 +1,9 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  ContoBancario\Infrastructure\Comunication\Console\Symfony\Command\:
+    resource: '%kernel.project_dir%/src/ContoBancario/Infrastructure/Comunication/Console/Symfony/Command/*'
+    tags: ['console.command']
