@@ -4,19 +4,16 @@ namespace ContoBancario\Application\Conto\Service;
 
 use ContoBancario\Domain\ContoCorrente\Aggregate\IdConto;
 use ContoBancario\Domain\ContoCorrente\Aggregate\Transazione;
-use ContoBancario\Domain\ContoCorrente\Repository\TransazioneRepository;
 
-class PrelevaService
+final class PrelevaService extends ContoCorrenteService
 {
-   private $transazioneRepository;
-
-   public function __construct(TransazioneRepository $transazioneRepository)
-   {
-      $this->transazioneRepository = $transazioneRepository;
-   }
-
    public function execute(PrelevaRequest $request)
    {
+      /** @var IdConto $idConto */
+      $idConto = IdConto::create($request->getIdConto());
+
+      $this->findContoCorrenteOrFail($idConto);
+
       $transazione = Transazione::preleva(
          $this->transazioneRepository->nextIdentity(),
          IdConto::create($request->getIdConto()),

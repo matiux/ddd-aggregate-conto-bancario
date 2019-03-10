@@ -86,3 +86,7 @@ Questo è un problema, indipendentemente dalla tecnologia utilizzata per la pers
 possiamo effettuare movimenti su conti correnti sbagliatio. Stiamo violando una regola di business.
 Ovviamente, questo può essere risolto usando una chiave esterna nel database, ma cosa succede se non stiamo usando un database 
 con chiavi esterne?
+## Tag v2.0.0
+Ora abbiamo quantomeno gestito la presenza di un conto corrente, ma c'è un problema nell'esecuzione del controllo 
+nell'application service. Se qualche altro client, diverso da questo servizio (un servizio di dominio o qualsiasi altro client)
+vuole effettuare un movimento su un conto inesistente può farlo per il controllo è a livello di application service.
