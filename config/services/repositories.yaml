@@ -1,0 +1,18 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  ContoBancario\Domain\Conto\Repository\ContoCorrenteRepository:
+    class: ContoBancario\Infrastructure\Domain\ContoCorrente\Doctrine\MySql\Repository\DoctrineMySqlContoCorrenteRepository
+    arguments:
+      - '@doctrine'
+      - 'ContoBancario\Domain\ContoCorrente\Aggregate\ContoCorrente'
+
+
+  ContoBancario\Domain\Conto\Repository\TransazioneRepository:
+    class: ContoBancario\Infrastructure\Domain\ContoCorrente\Doctrine\MySql\Repository\DoctrineMySqlTransazioneRepository
+    arguments:
+      - '@doctrine'
+      - 'ContoBancario\Domain\ContoCorrente\Aggregate\Transazione'

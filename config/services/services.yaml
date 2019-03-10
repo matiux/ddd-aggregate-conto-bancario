@@ -1,0 +1,17 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  ContoBancario\Application\Conto\Service\CreaConto:
+    arguments:
+      $contoCorrenteRepository: '@ContoBancario\Domain\Conto\Repository\ContoCorrenteRepository'
+
+  ContoBancario\Application\Conto\Service\VersaService:
+    arguments:
+      $transazioneRepository: '@ContoBancario\Domain\Conto\Repository\TransazioneRepository'
+
+  ContoBancario\Application\Conto\Service\PrelevaService:
+    arguments:
+      $transazioneRepository: '@ContoBancario\Domain\Conto\Repository\TransazioneRepository'

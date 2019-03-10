@@ -1,0 +1,26 @@
+ContoBancario\Domain\ContoCorrente\Aggregate\Transazione:
+  type: entity
+  table: transazioni
+
+  id:
+    idTransazione:
+      type: IdTransazione
+      column: id
+
+  fields:
+    idConto:
+      type: IdConto
+      nullable: false
+      column: id_conto
+    somma:
+      type: integer
+      nullable: false
+      options:
+        default: 0
+    dataContabile:
+      type: datetime_immutable
+      nullable: false
+      column: data_contabile
+    direzione:
+      type: string
+      length: 1
