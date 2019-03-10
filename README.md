@@ -76,7 +76,7 @@ Provare anche un versamento in un conto non esistente... Funziona!
 #Versamento effettuato.
 ```
 
-##Tag v1.0.0
+## Tag v1.0.0
 Con l'attuale implementazione, possiamo effettuare tutti i versamenti o prelievi che vogliamo. Tuttavia ci sono ben 2 problemi:
 * Possiamo creare movimenti su conti correnti non esistenti
 * Il conto corrente non si accorge dei movimenti effettuati
