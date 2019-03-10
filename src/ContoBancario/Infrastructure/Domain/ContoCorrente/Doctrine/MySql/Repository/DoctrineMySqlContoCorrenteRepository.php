@@ -24,4 +24,9 @@ class DoctrineMySqlContoCorrenteRepository extends DoctrineRepository implements
    {
       return IdConto::create();
    }
+
+   public function idConto(IdConto $idConto): ?ContoCorrente
+   {
+      return $this->em->find($this->getEntityClassName(), $idConto);
+   }
 }

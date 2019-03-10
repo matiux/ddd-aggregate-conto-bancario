@@ -4,22 +4,19 @@ namespace ContoBancario\Application\Conto\Service;
 
 use ContoBancario\Domain\ContoCorrente\Aggregate\IdConto;
 use ContoBancario\Domain\ContoCorrente\Aggregate\Transazione;
-use ContoBancario\Domain\ContoCorrente\Repository\TransazioneRepository;
 
-class VersaService
+final class VersaService extends ContoCorrenteService
 {
-   private $transazioneRepository;
-
-   public function __construct(TransazioneRepository $transazioneRepository)
-   {
-      $this->transazioneRepository = $transazioneRepository;
-   }
-
    public function execute(VersaRequest $request): void
    {
+      /** @var IdConto $idConto */
+      $idConto = IdConto::create($request->getIdConto());
+
+      $this->findContoCorrenteOrFail($idConto);
+
       $transazione = Transazione::versa(
          $this->transazioneRepository->nextIdentity(),
-         IdConto::create($request->getIdConto()),
+         $idConto,
          $request->getSomma()
       );
 
