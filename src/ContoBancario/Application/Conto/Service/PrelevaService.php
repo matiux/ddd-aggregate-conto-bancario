@@ -16,7 +16,7 @@ final class PrelevaService extends ContoCorrenteService
 
       $transazione = Transazione::preleva(
          $this->transazioneRepository->nextIdentity(),
-         IdConto::create($request->getIdConto()),
+         $idConto,
          $request->getSomma()
       );
 

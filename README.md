@@ -77,7 +77,7 @@ Provare anche un versamento in un conto non esistente... Funziona!
 ```
 
 ## Tag v1.0.0
-Con l'attuale implementazione, possiamo effettuare tutti i versamenti o prelievi che vogliamo. Tuttavia ci sono ben 2 problemi:
+Con l'attuale implementazione, possiamo effettuare tutti i versamenti o prelievi che vogliamo. Tuttavia ci sono vari problemi:
 * Possiamo creare movimenti su conti correnti non esistenti
 * Il conto corrente non si accorge dei movimenti effettuati
 * Possiamo prelevare all'infinito
@@ -89,4 +89,14 @@ con chiavi esterne?
 ## Tag v2.0.0
 Ora abbiamo quantomeno gestito la presenza di un conto corrente, ma c'è un problema nell'esecuzione del controllo 
 nell'application service. Se qualche altro client, diverso da questo servizio (un servizio di dominio o qualsiasi altro client)
-vuole effettuare un movimento su un conto inesistente può farlo per il controllo è a livello di application service.
+vuole effettuare un movimento su un conto inesistente può farlo in quanto il controllo è a livello di application service.
+```php
+#Da qualche parte in giro per l'applicazione
+
+$idConto = IdConto::create($request->getIdConto());
+$transazione = Transazione::preleva(
+ $this->transazioneRepository->nextIdentity(),
+ $idConto,
+ $request->getSomma()
+);
+```
