@@ -13,12 +13,11 @@ final class PrelevaService extends ContoCorrenteService
 
       $contoCorrente = $this->findContoCorrenteOrFail($idConto);
 
-      $transazione = $contoCorrente->preleva(
+      $contoCorrente->preleva(
          $this->transazioneRepository->nextIdentity(),
          $request->getSomma()
       );
 
-      $this->transazioneRepository->salva($transazione);
       $this->contoCorrenteRepository->salva($contoCorrente);
    }
 }

@@ -7,6 +7,21 @@ ContoBancario\Domain\ContoCorrente\Aggregate\ContoCorrente:
       type: IdConto
       column: id
 
+  manyToMany:
+    transazioni:
+      targetEntity: Transazione
+      orphanRemoval: true
+      cascade: ["all"]
+      joinTable:
+        name: conti_correnti_transazioni
+        joinColumns:
+          conto_id:
+            referencedColumnName: id
+        inverseJoinColumns:
+          transazione_id:
+            referencedColumnName: id
+            unique: true
+
   fields:
     titolare:
       type: string

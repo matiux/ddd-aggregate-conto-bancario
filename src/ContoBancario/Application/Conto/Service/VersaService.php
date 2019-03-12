@@ -13,12 +13,11 @@ final class VersaService extends ContoCorrenteService
 
       $contoCorrente = $this->findContoCorrenteOrFail($idConto);
 
-      $transazione = $contoCorrente->versa(
+      $contoCorrente->versa(
          $this->transazioneRepository->nextIdentity(),
          $request->getSomma()
       );
 
-      $this->transazioneRepository->salva($transazione);
       $this->contoCorrenteRepository->salva($contoCorrente);
    }
 }

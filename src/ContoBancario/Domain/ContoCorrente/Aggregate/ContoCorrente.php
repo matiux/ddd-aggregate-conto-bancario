@@ -3,6 +3,8 @@
 namespace ContoBancario\Domain\ContoCorrente\Aggregate;
 
 use DDDStarterPack\Domain\Aggregate\IdentifiableDomainObject;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Expr\Comparison;
 use LogicException;
 
 class ContoCorrente implements IdentifiableDomainObject
@@ -18,6 +20,8 @@ class ContoCorrente implements IdentifiableDomainObject
    /** @var int */
    private $fido;
 
+   private $transazioni;
+
    private function __construct(IdConto $idConto, string $titolare)
    {
       $this->idConto = $idConto;
@@ -25,6 +29,8 @@ class ContoCorrente implements IdentifiableDomainObject
 
       $this->saldo = 0;
       $this->fido = 0;
+
+      $this->transazioni = new Transazioni();
    }
 
    public static function crea(IdConto $idConto, string $titolare): self
@@ -42,21 +48,31 @@ class ContoCorrente implements IdentifiableDomainObject
       return $this->idConto;
    }
 
-   public function preleva(IdTransazione $idTransazione, int $somma): Transazione
+   public function preleva(IdTransazione $idTransazione, int $somma): void
    {
+      $expr = new Comparison('dataContabile', '=', 'jwage');
+      $criteria = new Criteria();
+      $criteria->where($expr);
+
+      $matched = $this->transazioni->matching($criteria);
+
       if ($somma > $this->saldo) {
          throw new LogicException('Importo non disponibile');
       }
 
       $this->saldo -= $somma;
 
-      return Transazione::preleva($idTransazione, $this->idConto, $somma);
+      $transazione = Transazione::preleva($idTransazione, $this->idConto, $somma);
+
+      $this->transazioni->add($transazione);
    }
 
-   public function versa(IdTransazione $idTransazione, int $somma): Transazione
+   public function versa(IdTransazione $idTransazione, int $somma): void
    {
       $this->saldo += $somma;
 
-      return Transazione::versa($idTransazione, $this->idConto, $somma);
+      $transazione = Transazione::versa($idTransazione, $this->idConto, $somma);
+
+      $this->transazioni->add($transazione);
    }
 }
