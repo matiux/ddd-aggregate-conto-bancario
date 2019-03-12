@@ -1,0 +1,7 @@
+#!/usr/bin/env /bin/zsh
+
+if [ ! -d "vendor" ]; then
+    composer install
+fi
+
+./setup-db $@

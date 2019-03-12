@@ -3,6 +3,7 @@
 namespace ContoBancario\Domain\ContoCorrente\Aggregate;
 
 use DDDStarterPack\Domain\Aggregate\IdentifiableDomainObject;
+use LogicException;
 
 class ContoCorrente implements IdentifiableDomainObject
 {
@@ -39,5 +40,23 @@ class ContoCorrente implements IdentifiableDomainObject
    public function id(): IdConto
    {
       return $this->idConto;
+   }
+
+   public function preleva(IdTransazione $idTransazione, int $somma): Transazione
+   {
+      if ($somma > $this->saldo) {
+         throw new LogicException('Importo non disponibile');
+      }
+
+      $this->saldo -= $somma;
+
+      return Transazione::preleva($idTransazione, $this->idConto, $somma);
+   }
+
+   public function versa(IdTransazione $idTransazione, int $somma): Transazione
+   {
+      $this->saldo += $somma;
+
+      return Transazione::versa($idTransazione, $this->idConto, $somma);
    }
 }
