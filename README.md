@@ -74,9 +74,8 @@ Con l'attuale implementazione, possiamo effettuare tutti i versamenti o prelievi
 * Possiamo prelevare all'infinito
 
 Questo è un problema, indipendentemente dalla tecnologia utilizzata per la persistenza. Anche con un'implementazione in memoria, 
-possiamo effettuare movimenti su conti correnti sbagliatio. Stiamo violando una regola di business.
-Ovviamente, questo può essere risolto usando una chiave esterna nel database, ma cosa succede se non abbiamo un database 
-con chiavi esterne?
+possiamo effettuare movimenti su conti correnti sbagliati. Stiamo violando una regola di business. Ovviamente, questo può essere 
+risolto usando una chiave esterna nel database, ma cosa succede se non abbiamo un database con chiavi esterne?
 ## Step 2
 Ora abbiamo quantomeno gestito la presenza di un conto corrente, ma c'è un problema nell'esecuzione del controllo 
 nell'application service (`PrelevaService` e `VersaService`). Se qualche altro client, diverso da questo servizio
