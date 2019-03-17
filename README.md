@@ -118,6 +118,22 @@ compiuta sul conto, è il savataggio dello stesso che rende effettivi tutti i ca
    
    //$this->transazioneRepository->salva($transazione); #Non serve più
 ```
+Il principio `Tell Don't Ask` utilizzato nello step 3 qui è diventato il principio `Law of Demeter` 
+(principle of least knowledge). Tale principio di basa su 2 bunti:
+* Ogni blocco di codice (metodo, funzione ecc) deve conoscere solo pochi altre blocchi strettamente correlati;
+* Ogni blocco di codice dovrebbe interagire solo con i blocchi che conosce direttamente.
+
+In sintesi ci dice di **non parlare con gli sconosciuti**.
+
+Ora infatti chiediamo al'aggregato di eseguire una transazione, ma questo non la ritorna più:
+
+```php
+   $contoCorrente->preleva(
+      $this->transazioneRepository->nextIdentity(),
+      $request->getSomma()
+   );
+```
+
 A questo punto possiamo notare altre 2 cose:
 * Ubiquitous language: è il linguaggio comune e rigoroso tra gli sviluppatori, gli utenti e gli esperti di dominio. Questo
 si porta dietro anche uno dei dubbi che spesso gli sviluppatori hanno; codice italiano o codice inglese? Per quanto agli 
