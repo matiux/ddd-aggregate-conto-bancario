@@ -109,7 +109,7 @@ legati tra di loro è un vincolo di dominio; il conto corrente e il suo saldo di
 Vediamo quindi come gestire questa cosa a livello di dominio piuttosto che a livello infrastrutturale introducendo 
 anche una nuova regola di business: non si possono fare più di 3 prelievi al giorno. 
 
-##Step 4
+## Step 4
 In questo step abbiamo raggiunto la completa e corretta implementazione dell'aggregato. `ContoCorrente` protegge
 le nostre invarianti di dominio e funge da `Aggregate Root` per le inviarianti e le transazioni. Per ogni operazione
 compiuta sul conto, è il savataggio dello stesso che rende effettivi tutti i cambi di stato al suo interno:
