@@ -15,19 +15,12 @@ git clone git@github.com:matiux/ddd-aggregate-conto-bancario && cd ddd-aggregate
 ```
 cp .env .env.local
 ```
-#### Gestione container
-Usare il comando dc come shortcut a docker-compose
+## Sviluppo
+Usare il comando `dc` come shortcut a docker-compose
 ```
 ./dc up -d
-./dc enter - Entra come utente nel container php
-./dc down -v
-```
-## Sviluppo
-
-#### Entrare nel container PHP per lo sviluppo
-```
 ./dc enter
-composer install
+./setup --force
 ```
 Il container php è configurato per far comunicare Xdebug con PhpStorm
 
@@ -40,10 +33,8 @@ Il container php è configurato per far comunicare Xdebug con PhpStorm
 
 ## Comandi e Aliases all'interno del container PHP
 
-* `test` è un alias a `./vendor/bin/simple-phpunit`
 * `sf` è un alias a `bin/console` per usare la console di Symfony
 * `sfcc` è un alias a `rm -Rf var/cache/*` per svuotare la cache
-* `memflush` è un alias a `echo \"flush_all\" | nc servicememcached 11211 -q 1"` per svuotare memcached
 * `xon` - Abilita xdebug
 * `xoff` - Disabilita xdebug
 
@@ -76,7 +67,7 @@ Provare anche un versamento in un conto non esistente... Funziona!
 #Versamento effettuato.
 ```
 
-## Tag v1.0.0
+## Step 1
 Con l'attuale implementazione, possiamo effettuare tutti i versamenti o prelievi che vogliamo. Tuttavia ci sono vari problemi:
 * Possiamo creare movimenti su conti correnti non esistenti
 * Il conto corrente non si accorge dei movimenti effettuati
@@ -84,19 +75,21 @@ Con l'attuale implementazione, possiamo effettuare tutti i versamenti o prelievi
 
 Questo è un problema, indipendentemente dalla tecnologia utilizzata per la persistenza. Anche con un'implementazione in memoria, 
 possiamo effettuare movimenti su conti correnti sbagliatio. Stiamo violando una regola di business.
-Ovviamente, questo può essere risolto usando una chiave esterna nel database, ma cosa succede se non stiamo usando un database 
+Ovviamente, questo può essere risolto usando una chiave esterna nel database, ma cosa succede se non abbiamo un database 
 con chiavi esterne?
-## Tag v2.0.0
+## Step 2
 Ora abbiamo quantomeno gestito la presenza di un conto corrente, ma c'è un problema nell'esecuzione del controllo 
-nell'application service. Se qualche altro client, diverso da questo servizio (un servizio di dominio o qualsiasi altro client)
-vuole effettuare un movimento su un conto inesistente può farlo in quanto il controllo è a livello di application service.
+nell'application service (`PrelevaService` e `VersaService`). Se qualche altro client, diverso da questo servizio
+(un servizio di dominio o qualsiasi altro client) vuole effettuare un movimento su un conto inesistente può farlo 
+in quanto il controllo è a livello di application service.
 ```php
 #Da qualche parte in giro per l'applicazione
 
 $idConto = IdConto::create($request->getIdConto());
+
 $transazione = Transazione::preleva(
- $this->transazioneRepository->nextIdentity(),
- $idConto,
- $request->getSomma()
+  $this->transazioneRepository->nextIdentity(),
+  $idConto,
+  $request->getSomma()
 );
 ```
