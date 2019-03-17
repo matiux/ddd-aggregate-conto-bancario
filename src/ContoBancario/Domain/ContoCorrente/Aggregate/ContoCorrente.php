@@ -2,10 +2,11 @@
 
 namespace ContoBancario\Domain\ContoCorrente\Aggregate;
 
+use ContoBancario\Domain\ContoCorrente\Exception\TransazioneInvalidaException;
+use DateTime;
 use DDDStarterPack\Domain\Aggregate\IdentifiableDomainObject;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Expr\Comparison;
-use LogicException;
 
 class ContoCorrente implements IdentifiableDomainObject
 {
@@ -18,7 +19,7 @@ class ContoCorrente implements IdentifiableDomainObject
    private $titolare;
 
    /** @var int */
-   private $fido;
+   private $maxPrelievi;
 
    private $transazioni;
 
@@ -28,7 +29,7 @@ class ContoCorrente implements IdentifiableDomainObject
       $this->titolare = $titolare;
 
       $this->saldo = 0;
-      $this->fido = 0;
+      $this->maxPrelievi = 3;
 
       $this->transazioni = new Transazioni();
    }
@@ -50,20 +51,11 @@ class ContoCorrente implements IdentifiableDomainObject
 
    public function preleva(IdTransazione $idTransazione, int $somma): void
    {
-      $expr = new Comparison('dataContabile', '=', 'jwage');
-      $criteria = new Criteria();
-      $criteria->where($expr);
-
-      $matched = $this->transazioni->matching($criteria);
-
-      if ($somma > $this->saldo) {
-         throw new LogicException('Importo non disponibile');
-      }
+      $this->validaNumeroPrelievo();
+      $this->validaSaldo($somma);
 
       $this->saldo -= $somma;
-
       $transazione = Transazione::preleva($idTransazione, $this->idConto, $somma);
-
       $this->transazioni->add($transazione);
    }
 
@@ -74,5 +66,25 @@ class ContoCorrente implements IdentifiableDomainObject
       $transazione = Transazione::versa($idTransazione, $this->idConto, $somma);
 
       $this->transazioni->add($transazione);
+   }
+
+   private function validaNumeroPrelievo(): void
+   {
+      $expr1 = new Comparison('dataContabile', Comparison::GTE, new DateTime('today'));
+      $expr2 = new Comparison('dataContabile', Comparison::LT, new DateTime('tomorrow'));
+      $expr3 = new Comparison('direzione', Comparison::EQ, Transazione::PRELEVA);
+      $criteria = new Criteria();
+      $criteria->where($expr1)->andWhere($expr2)->andWhere($expr3);
+
+      if ($this->maxPrelievi <= $this->transazioni->matching($criteria)->count()) {
+         throw new TransazioneInvalidaException('Numero massimo di transazioni giornaliero raggiunto');
+      }
+   }
+
+   private function validaSaldo(int $somma): void
+   {
+      if ($somma > $this->saldo) {
+         throw new TransazioneInvalidaException('Importo non disponibile');
+      }
    }
 }

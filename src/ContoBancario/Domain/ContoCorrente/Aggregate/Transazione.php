@@ -6,8 +6,8 @@ use DateTimeImmutable;
 
 class Transazione
 {
-   private const VERSA = '+';
-   private const PRELEVA = '-';
+   public const VERSA = '+';
+   public const PRELEVA = '-';
 
    private $idTransazione;
    private $somma;
@@ -32,5 +32,15 @@ class Transazione
    public static function preleva(IdTransazione $idTransazione, IdConto $idConto, int $somma)
    {
       return new self($idTransazione, $idConto, $somma, self::PRELEVA);
+   }
+
+   public function getDataContabile(): DateTimeImmutable
+   {
+      return $this->dataContabile;
+   }
+
+   public function getDirezione(): string
+   {
+      return $this->direzione;
    }
 }
