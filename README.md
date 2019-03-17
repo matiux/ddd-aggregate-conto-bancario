@@ -94,25 +94,25 @@ $transazione = Transazione::preleva(
 );
 ```
 ## Step 3
-In questo step abbiamo risolto vati problemi identificati nello step_1 e nello step_2. Innanzi tutto avendo
+In questo step abbiamo risolto vari problemi identificati nello step_1 e nello step_2. Innanzi tutto avendo
 portato i metodi `versa()` e `preleva()` dentro all'aggregato `ContoCorrente`, non abbiamo più alcun modo 
 di creare transazioni per conti inesistenti in quanto ora, grazie ai due metodi factory, è l'aggregato 
 chegestisce i versamenti e i prelievi. Questa è l'implementazione del principio `Tell Don't Ask` che come dice 
 Martin Fowler ci ricorda che l'orientamento all'oggetto riguarda il raggruppamento dei dati con le 
 funzioni che operano su quei dati. Ci ricorda che piuttosto che chiedere a un oggetto i dati e agire 
 su quei dati, dovremmo invece dire a un oggetto cosa fare. Questo incoraggia a spostare il comportamento 
-all'interno degli oggetti. L'implementazione di questo principio ci ha dato anche modo di incapsulare la
-logica prelievo e versamento gestendo il saldo del conto corrente all'interno dell'oggetto `ContoCorrente`
-notificando eventuali anomalie.
-Abbiamo risolto tutti i problemi legati alle violazioni di dominio riguardo gli step precedenti ma abbiamo
+all'interno degli oggetti di dominio (aggregati). L'implementazione di questo principio ci ha dato anche modo 
+di incapsulare la logica di prelievo e versamento gestendo il saldo del conto corrente all'interno 
+dell'oggetto `ContoCorrente` notificando eventuali anomalie.
+Abbiamo risolto tutti i problemi legati alle violazioni di dominio evidenziati negli step precedenti ma abbiamo
 reso più visibile un altro problema. Ora a ogni prelievo e a ogni versamento dobbiamo salvare sia lo stato
 della nuova transazione che lo stato del conto corrente. Queste due entità sono strettamente legate e tutte 
 le invarianti di dominio ruotanno attorno alla consistenza di questi due oggetti; salvarli in due momenti 
 dististi potrebbe generare un saldo che non tiene traccia di una transazione, ad esempio. Il salvataggio di 
 queste due entità dovrebbe essere atomico, o tutto o niente. Probabilmente a qualcuno verrà in mente di 
-racchiudere il tutto dentro a una transazione. POtrebbe essere uan soluzione, ma è una soluzione che riguarda
-l'infrastruttura e non il dominio. Cosa succederebbe se usassimo un sistema di persistenza che per qualche
-motivo non supporta le transazioni in stile MySql? Il fatto che gli oggetti `ContoCorrente` e `Transazione`
-siano strettagmente legati tra di loro è un vincolo di dominio; il conto corrente e il suo saldo dipende
-dalle transizioni. Vediamo quindi come gestire questa cosa a livello di dominio introducendo anche una nuova
-regola di business: non si possono fare più di 3 prelievi al giorno. 
+racchiudere il tutto dentro a una transazione. Potrebbe essere uan soluzione, ma riguarda l'infrastruttura e 
+non il dominio. Cosa succederebbe se usassimo un sistema di persistenza che per qualche motivo non supporta 
+le transazioni in stile MySql? Il fatto che gli oggetti `ContoCorrente` e `Transazione` siano strettagmente 
+legati tra di loro è un vincolo di dominio; il conto corrente e il suo saldo dipende dalle transizioni. 
+Vediamo quindi come gestire questa cosa a livello di dominio piuttosto che a livello infrastrutturale introducendo 
+anche una nuova regola di business: non si possono fare più di 3 prelievi al giorno. 
